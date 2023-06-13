@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import StudentDetailModel
 from .serializers import StudentDetailModelListSerializer, StudentDetailModelCreateSerializer, StudentDetailModelUpdateSerializer
-from rest_framework import views, status 
+from rest_framework import views, status, generics
 from rest_framework.response import Response
 # Create your views here.
 
@@ -63,6 +63,11 @@ class SingleStudentDetailModelReadView(views.APIView):
         StudentDetailModel.objects.get(id=id).delete()
         return Response({"message" : "query was deleted"}, status=status.HTTP_200_OK)
 
+"""
+
+APIVIEW
+
+"""
 
 # Serialization -> Python obj's -> Json
 # DeSerialization -> Json -> Python obj's
@@ -95,7 +100,10 @@ class StudentDetialModelUpdateRestAPIView(views.APIView):
     def put(self, request, id):
         try:
             query = StudentDetailModel.objects.get(id=id)
-            serializer = StudentDetailModelUpdateSerializer(data=request.data, instance=query)
+            serializer = StudentDetailModelUpdateSerializer(
+                data=request.data, 
+                instance=query)
+            # 
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message" : "data Updated Successfully"})
@@ -106,10 +114,86 @@ class StudentDetialModelUpdateRestAPIView(views.APIView):
     
     def delete(self, request, id):
         try:
-            query = StudentDetailModel.objects.get(id=id).delete()
+            StudentDetailModel.objects.get(id=id).delete()
             return Response({"message" : "query is deleted"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
     
 
 
+"""
+GENETIC API VIEWS
+"""
+
+class StudentDetailModelReadRestGenericAPIView(generics.GenericAPIView):
+    queryset = StudentDetailModel.objects.all()
+    serializer_class = StudentDetailModelCreateSerializer
+
+    def get(self, request):
+        queryset = StudentDetailModel.objects.all()
+        # all, filter -> [] -> many = True
+        # get -> {} -> many = False
+        serializer = StudentDetailModelListSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = StudentDetailModelCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message" : "data Added Successfully"})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+
+
+class StudentDetialModelUpdateGenericAPIView(generics.GenericAPIView):
+    queryset = StudentDetailModel.objects.all()
+    serializer_class = StudentDetailModelUpdateSerializer
+
+    def get(self, request, id):
+        try:
+            query = StudentDetailModel.objects.get(id=id)
+            serializer = StudentDetailModelListSerializer(query, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def put(self, request, id):
+        try:
+            query = StudentDetailModel.objects.get(id=id)
+            serializer = StudentDetailModelUpdateSerializer(
+                data=request.data, 
+                instance=query)
+            # 
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message" : "data Updated Successfully"})
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        try:
+            StudentDetailModel.objects.get(id=id).delete()
+            return Response({"message" : "query is deleted"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+LISTAPIVIEW
+CREATEAPIVIEW
+LISTCREATEAPIVIEW
+"""
+
+class StudentDetailModelListAPIView(generics.ListAPIView):
+    queryset = StudentDetailModel.objects.all()
+    serializer_class = StudentDetailModelListSerializer
+
+class StudentDetailModelCreateAPIView(generics.CreateAPIView):
+    queryset = StudentDetailModel.objects.all()
+    serializer_class = StudentDetailModelCreateSerializer
+
+class StudentDetailModelListCreateAPIView(generics.ListCreateAPIView):
+    queryset = StudentDetailModel.objects.all()
+    serializer_class = StudentDetailModelCreateSerializer
