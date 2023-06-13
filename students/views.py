@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import StudentDetailModel
-from .serializers import StudentDetailModelListSerializer, StudentDetailModelCreateSerializer
+from .serializers import StudentDetailModelListSerializer, StudentDetailModelCreateSerializer, StudentDetailModelUpdateSerializer
 from rest_framework import views, status 
 from rest_framework.response import Response
 # Create your views here.
@@ -69,8 +69,8 @@ class SingleStudentDetailModelReadView(views.APIView):
 class StudentDetailModelReadRestAPIView(views.APIView):
     def get(self, request):
         queryset = StudentDetailModel.objects.all()
-        # all filter -> [] -> many=True
-        # GET -> {} -> many = False
+        # all, filter -> [] -> many = True
+        # get -> {} -> many = False
         serializer = StudentDetailModelListSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -81,3 +81,35 @@ class StudentDetailModelReadRestAPIView(views.APIView):
             return Response({"message" : "data Added Successfully"})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    
+
+class StudentDetialModelUpdateRestAPIView(views.APIView):
+    def get(self, request, id):
+        try:
+            query = StudentDetailModel.objects.get(id=id)
+            serializer = StudentDetailModelListSerializer(query, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def put(self, request, id):
+        try:
+            query = StudentDetailModel.objects.get(id=id)
+            serializer = StudentDetailModelUpdateSerializer(data=request.data, instance=query)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message" : "data Updated Successfully"})
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        try:
+            query = StudentDetailModel.objects.get(id=id).delete()
+            return Response({"message" : "query is deleted"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"Error" : f"Something went wrong, {e}"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
