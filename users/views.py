@@ -29,18 +29,18 @@ def dummy_api(request):
 
 
 class DummyRestAPIView(views.APIView):
-
+    # Read
     def get(self, request):
         return Response(data, status=status.HTTP_200_OK)
-    
+    # Create
     def post(self, request):
         req_data = request.data
         return Response(req_data, status=status.HTTP_200_OK)
-    
+    # Update
     def put(self, request):
         req_data = request.data
         return Response(req_data, status=status.HTTP_200_OK)
-    
+    # Delete
     def delete(self, request):
         return Response({"message" : "Id is deleted"})
 
