@@ -52,6 +52,10 @@ class StudentDetailModel(models.Model):
     date_of_birth =  models.DateField()
     branch        =  models.CharField(max_length=100)
     year_of_joining = models.DateField()
+    address = models.ForeignKey(AddressDetailModel,
+                                on_delete=models.CASCADE, 
+                                related_name="student_detail_address", 
+                                null=True, blank=True) 
     # obj of studentDetailModel will have connection only for once with any instane of obj StudentContactModel
     # StudentDetailMoldeobj1 -> StudentContactDetailModelobj1
     # StudentDetailMoldeobj2 can't create a relation again with StudentContactDetailModelobj1
@@ -70,10 +74,7 @@ class StudentDetailModel(models.Model):
     # # One to Many
     # # Many to One
     # # saving id of parent or child class
-    # address = models.ForeignKey(AddressDetailModel,
-    #                             on_delete=models.CASCADE, 
-    #                             related_name="student_detail_address", 
-    #                             null=True, blank=True) 
+    
 
     created_at = models.DateTimeField(auto_now_add=True)
 

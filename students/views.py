@@ -3,6 +3,7 @@ from .models import StudentDetailModel
 from .serializers import StudentDetailModelListSerializer, StudentDetailModelCreateSerializer, StudentDetailModelUpdateSerializer
 from rest_framework import views, status, generics
 from rest_framework.response import Response
+from rest_framework import mixins, generics
 # Create your views here.
 
 # url -> normal -> [GET, POST] -> api/student-details/ 
@@ -122,7 +123,9 @@ class StudentDetialModelUpdateRestAPIView(views.APIView):
 
 
 """
+
 GENETIC API VIEWS
+
 """
 
 class StudentDetailModelReadRestGenericAPIView(generics.GenericAPIView):
@@ -194,6 +197,40 @@ class StudentDetailModelCreateAPIView(generics.CreateAPIView):
     queryset = StudentDetailModel.objects.all()
     serializer_class = StudentDetailModelCreateSerializer
 
-class StudentDetailModelListCreateAPIView(generics.ListCreateAPIView):
+class StudentDetailModelListCreateAPIView(generics.ListAPIView, generics.CreateAPIView):
     queryset = StudentDetailModel.objects.all()
     serializer_class = StudentDetailModelCreateSerializer
+
+
+
+"""
+mixins
+"""
+
+# Mixin for list and create functionality
+# class MyModelListCreateMixin(mixins.ListModelMixin, mixins.CreateModelMixin):
+#     queryset = MyModel.objects.all()
+#     serializer_class = MyModelSerializer
+
+# # Mixin for retrieve, update and delete functionality
+# class MyModelRetrieveUpdateDeleteMixin(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+#     queryset = MyModel.objects.all()
+#     serializer_class = MyModelSerializer
+
+# # API view using the mixins
+# class MyModelListCreateAPIView(MyModelListCreateMixin, generics.GenericAPIView):
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+
+# class MyModelRetrieveUpdateDeleteAPIView(MyModelRetrieveUpdateDeleteMixin, generics.GenericAPIView):
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+
+    # def put(self, request, *args, **kwargs):
+    #     return self.update(request, *args, **kwargs)
+
+    # def delete(self, request, *args, **kwargs):
+    #     return self.destroy(request, *args, **kwargs)
