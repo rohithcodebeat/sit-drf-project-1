@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import StudentDetailModel
 from .serializers import StudentDetailModelListSerializer, StudentDetailModelCreateSerializer, StudentDetailModelUpdateSerializer
-from rest_framework import views, status, generics
+from rest_framework import views, status, generics, permissions, authentication
 from rest_framework.response import Response
 from rest_framework import mixins, generics
 # Create your views here.
@@ -131,6 +131,9 @@ GENETIC API VIEWS
 class StudentDetailModelReadRestGenericAPIView(generics.GenericAPIView):
     queryset = StudentDetailModel.objects.all()
     serializer_class = StudentDetailModelCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # IsAuthenticated IsAdminUser
+    authenticate_class = [authentication.BaseAuthentication]
 
     def get(self, request):
         queryset = StudentDetailModel.objects.all()
