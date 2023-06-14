@@ -60,7 +60,7 @@ class StudentDetailModel(models.Model):
     # StudentDetailMoldeobj1 -> StudentContactDetailModelobj1
     # StudentDetailMoldeobj2 can't create a relation again with StudentContactDetailModelobj1
     # we are saving list of id 
-    # prev_education = models.ManyToManyField(PrevEducationModel, related_name="student_prev_education_field", blank=True)
+    prev_education = models.ManyToManyField(PrevEducationModel, related_name="student_prev_education_field", blank=True)
     # # saving id of parent or child class 
     # contact_info = models.OneToOneField(
     #     StudentContactDetailModel, on_delete=models.CASCADE, 
