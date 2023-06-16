@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from .models import StudentDetailModel
 from .serializers import StudentDetailModelListSerializer, StudentDetailModelCreateSerializer, StudentDetailModelUpdateSerializer
-from rest_framework import views, status, generics, permissions, authentication
+from rest_framework import views, status, generics, permissions, authentication, filters
 from rest_framework.response import Response
 from rest_framework import mixins, generics
+import django_filters 
 # Create your views here.
 
 # url -> normal -> [GET, POST] -> api/student-details/ 
@@ -133,7 +134,10 @@ class StudentDetailModelReadRestGenericAPIView(generics.GenericAPIView):
     serializer_class = StudentDetailModelCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
     # IsAuthenticated IsAdminUser
-    authenticate_class = [authentication.BaseAuthentication]
+    authenticate_class = [authentication.BaseAuthentication, authentication.TokenAuthentication, authentication.SessionAuthentication]
+    
+    # what kind of authentication is available for this API
+
 
     def get(self, request):
         queryset = StudentDetailModel.objects.all()
@@ -191,10 +195,21 @@ LISTAPIVIEW
 CREATEAPIVIEW
 LISTCREATEAPIVIEW
 """
+class StudentDetailFilter(django_filters.FilterSet):
+    
 
+    class Meta:
+        model = StudentDetailModel
+        fields = ["address"]
+
+# Add filter
 class StudentDetailModelListAPIView(generics.ListAPIView):
     queryset = StudentDetailModel.objects.all()
     serializer_class = StudentDetailModelListSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = StudentDetailFilter
+    search_fields = ["name", "roll_no", "branch", "address__city", "address__state", "address__country"]
+    ordering_fields = ["roll_no", "created_at"]
 
 class StudentDetailModelCreateAPIView(generics.CreateAPIView):
     queryset = StudentDetailModel.objects.all()

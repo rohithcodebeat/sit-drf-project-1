@@ -37,6 +37,9 @@ class AddressDetailModel(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True) 
 
+    def __str__(self):
+        return self.city
+
 class PrevEducationModel(models.Model):
     university = models.CharField(max_length=100) # abc
     degree = models.CharField(max_length=100) # cse

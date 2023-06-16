@@ -2,6 +2,27 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 """
+Authentication and Authorization
+Authentication
+login -> username/password -> token 
+                           -> Incorrect Password
+
+Authorization
+username/password
+user_instance = get_user_model().objects.get(username=username)
+if user_instance.is_active -> token : -> No active user found
+SIT University Portal
+
+Student's Portal 
+
+Teacher's Portal 
+ -> a student tried to login in teacher portal 
+    * user_instance = get_user_model().objects.get(username=username)
+    * if user_instance.is_active -> 
+    * if user_instance.is_staff -> token : -> No active user found
+
+
+
 Custom User Model
 
 Manager -> Class which takes care of create Method
@@ -86,3 +107,26 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     
 
 
+"""
+JWT -> Json Web Token 
+request users/api/login/
+data = {
+    "username" : data["username"],
+    "password" : data["password"]
+}
+response -> JWT
+this jwt token is used for authentication  
+
+JWT -> Refresh and Access
+
+Access token is the token used for authentication 
+
+Refresh token is used to generate a new access Token
+
+Access token always has less life time then Refresh token so when a access token is
+expired we will generate new access token using Refresh token
+
+fb -> Access, Refresh 
+1 api -> access, refresh i.e. login
+2 api -> takes refresh and return access
+"""

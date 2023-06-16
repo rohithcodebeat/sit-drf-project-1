@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     "users",
     "students",
     # third party
-    "rest_framework"
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_filters"
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2
+    
+}
+
 
 AUTH_USER_MODEL = "users.UserModel"
 
